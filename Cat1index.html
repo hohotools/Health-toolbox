@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🐾 多多＆妞妞 嘔吐紀錄</title>
+<style>
+  /* ===== CSS 變數：配色與設計系統 ===== */
+  :root {
+    --white: #FFFFFF;
+    --cream: #FDF8F0;
+    --milk-tea: #E8D5C0;
+    --milk-tea-dark: #D4B896;
+    --blush: #F5E6D8;
+    --powder-blue: #C8DFF0;
+    --powder-blue-dark: #A8C8E8;
+    --sky: #EEF6FC;
+    --peach: #FFD4B2;
+    --peach-dark: #FFB88C;
+    --peach-light: #FFF0E6;
+    --pink-soft: #FFE4EC;
+    --pink: #F8A0BC;
+    --text-dark: #4A3728;
+    --text-mid: #7A6255;
+    --text-light: #A89588;
+    --shadow: rgba(180, 140, 100, 0.15);
+    --shadow-strong: rgba(180, 140, 100, 0.25);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --radius-xs: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== 頂部導覽列 ===== */
+  .nav-bar {
+    background: var(--white);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: 0.5px;
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    line-height: 1;
+  }
+  .nav-btn:active { background: var(--blush); }
+
+  /* ===== 頁面容器 ===== */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .content { padding: 16px; max-width: 480px; margin: 0 auto; }
+
+  /* ===== 統計卡 ===== */
+  .stats-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+  .stats-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .stats-pet {
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+  .stats-pet-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .stats-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    color: var(--text-mid);
+    padding: 4px 0;
+  }
+  .stats-num {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .stats-label { font-size: 15px; }
+
+  /* ===== 首頁貓咪按鈕 ===== */
+  .home-cat-section { margin-bottom: 16px; }
+  .home-cat-btn {
+    width: 100%;
+    background: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: 20px 20px 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-align: left;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .home-cat-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px var(--shadow); }
+
+  .cat-btn-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .cat-name-big {
+    font-size: 25px;
+    font-weight: 800;
+    color: var(--text-dark);
+  }
+  .add-badge {
+    background: var(--peach);
+    color: var(--text-dark);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .today-records { border-top: 1px solid var(--blush); padding-top: 10px; }
+  .record-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream);
+  }
+  .record-row:last-child { border-bottom: none; }
+  .record-time {
+    font-size: 16px;
+    color: var(--text-light);
+    font-weight: 600;
+    min-width: 42px;
+  }
+  .record-content {
+    flex: 1;
+    font-size: 16px;
+    color: var(--text-mid);
+    padding: 0 8px;
+  }
+  .record-actions { display: flex; gap: 6px; }
+  .record-edit-btn, .record-del-btn {
+    background: none;
+    border: none;
+    font-size: 19px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .record-edit-btn:active { background: var(--powder-blue); }
+  .record-del-btn:active { background: var(--pink-soft); }
+  .no-records {
+    font-size: 16px;
+    color: var(--text-light);
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  /* ===== 底部按鈕列 ===== */
+  .bottom-nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+  .bottom-nav-btn {
+    flex: 1;
+    background: var(--white);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .bottom-nav-btn span:first-child { font-size: 23px; }
+  .bottom-nav-btn:active { background: var(--blush); transform: scale(0.96); }
+
+  /* ===== 新增紀錄表單 ===== */
+  .form-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+  .form-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .form-input {
+    width: 100%;
+    border: 1.5px solid var(--milk-tea);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 18px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--powder-blue-dark); background: var(--white); }
+
+  /* 選項按鈕組 */
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .choice-btn {
+    background: var(--cream);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 10px 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .choice-btn:active { transform: scale(0.95); }
+  .choice-btn.selected {
+    background: var(--powder-blue);
+    border-color: var(--powder-blue-dark);
+    color: var(--text-dark);
+  }
+  .choice-btn.selected-peach {
+    background: var(--peach-light);
+    border-color: var(--peach-dark);
+    color: var(--text-dark);
+  }
+
+  /* 次數調整 */
+  .count-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .count-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    font-size: 25px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .count-btn.minus { background: var(--pink-soft); color: var(--pink); }
+  .count-btn.plus { background: var(--powder-blue); color: var(--powder-blue-dark); }
+  .count-btn:active { transform: scale(0.88); }
+  .count-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-dark);
+    min-width: 48px;
+    text-align: center;
+  }
+  .count-unit { font-size: 17px; color: var(--text-light); margin-left: -12px; }
+
+  /* 其他輸入框（隱藏式） */
+  .other-input-wrap { margin-top: 8px; }
+  .other-input-wrap .form-input { font-size: 17px; padding: 10px 12px; }
+
+  /* 備註 */
+  .form-textarea {
+    width: 100%;
+    border: 1.5px solid var(--milk-tea);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 17px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: var(--cream);
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s;
+    min-height: 80px;
+  }
+  .form-textarea:focus { border-color: var(--powder-blue-dark); background: var(--white); }
+
+  /* 儲存按鈕 */
+  .save-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--peach-dark), var(--pink));
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--white);
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255, 150, 130, 0.35);
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  .save-btn:active { transform: scale(0.97); box-shadow: 0 3px 10px rgba(255, 150, 130, 0.25); }
+
+  /* ===== 全部紀錄頁 ===== */
+  .date-group { margin-bottom: 16px; }
+  .date-header {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-light);
+    padding: 6px 4px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .full-record-card {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .full-record-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .full-record-pet {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .full-record-time {
+    font-size: 15px;
+    color: var(--text-light);
+    font-weight: 600;
+  }
+  .full-record-content {
+    font-size: 17px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+  .tag {
+    display: inline-block;
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 15px;
+    color: var(--text-mid);
+    margin: 3px 3px 0 0;
+  }
+  .full-record-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .action-btn {
+    flex: 1;
+    background: var(--cream);
+    border: none;
+    border-radius: var(--radius-xs);
+    padding: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action-btn:active { background: var(--blush); }
+  .action-btn.del { color: #E07070; }
+  .action-btn.del:active { background: var(--pink-soft); }
+
+  /* ===== 搜尋頁 ===== */
+  .search-bar {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .search-input {
+    width: 100%;
+    border: 1.5px solid var(--milk-tea);
+    border-radius: var(--radius-xs);
+    padding: 10px 12px;
+    font-size: 17px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: var(--cream);
+    outline: none;
+  }
+  .search-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-btn {
+    background: var(--cream);
+    border: 1.5px solid transparent;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn.active { background: var(--powder-blue); border-color: var(--powder-blue-dark); color: var(--text-dark); }
+  .filter-btn:active { transform: scale(0.95); }
+
+  .search-btn {
+    width: 100%;
+    background: var(--powder-blue);
+    border: none;
+    border-radius: var(--radius-xs);
+    padding: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .search-btn:active { background: var(--powder-blue-dark); }
+
+  /* ===== Toast 通知 ===== */
+  .toast {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-dark);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===== 空狀態 ===== */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+    font-size: 17px;
+    line-height: 2;
+  }
+  .empty-emoji { font-size: 52px; margin-bottom: 12px; }
+
+  /* ===== 確認對話框 ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--white);
+    border-radius: 24px 24px 0 0;
+    padding: 28px 24px 40px;
+    width: 100%;
+    max-width: 480px;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-title {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--text-dark);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .modal-msg {
+    font-size: 17px;
+    color: var(--text-mid);
+    text-align: center;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btn {
+    flex: 1;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modal-btn.cancel { background: var(--cream); color: var(--text-mid); }
+  .modal-btn.confirm { background: linear-gradient(135deg, var(--peach-dark), var(--pink)); color: var(--white); }
+  .modal-btn:active { transform: scale(0.96); }
+
+  /* ===== 匯出按鈕 ===== */
+  .export-btn {
+    width: 100%;
+    background: var(--white);
+    border: 2px solid var(--milk-tea);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-mid);
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: all 0.15s;
+    margin-bottom: 16px;
+  }
+  .export-btn:active { background: var(--blush); transform: scale(0.97); }
+
+  /* ===== 日期選擇 ===== */
+  .date-jump {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .date-jump label { font-size: 17px; font-weight: 600; color: var(--text-mid); white-space: nowrap; }
+  .date-jump input {
+    flex: 1;
+    border: 1.5px solid var(--milk-tea);
+    border-radius: var(--radius-xs);
+    padding: 8px 12px;
+    font-size: 17px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: var(--cream);
+    outline: none;
+  }
+
+  /* 捲動區 */
+  .scroll-area { padding-bottom: 32px; }
+
+  /* 貓咪頁首裝飾 */
+  .page-hero {
+    text-align: center;
+    padding: 20px 0 4px;
+  }
+  .page-hero-emoji { font-size: 40px; }
+  .page-hero-title {
+    font-size: 27px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 6px 0 2px;
+  }
+  .page-hero-sub { font-size: 16px; color: var(--text-light); }
+
+  /* 當前寵物標籤 */
+  .pet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--peach-light);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+  }
+
+  /* 選擇 3 欄佈局（嘔吐原因） */
+  .choice-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .choice-grid-3 .choice-btn { font-size: 15px; padding: 8px 4px; }
+
+  /* 多選標記 */
+  .choice-btn .check-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--powder-blue-dark);
+    margin-right: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .choice-btn.selected .check-dot,
+  .choice-btn.selected-peach .check-dot { opacity: 1; }
+
+  /* 輸入時間美化 */
+  input[type="datetime-local"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 導覽列 ===== -->
+<div class="nav-bar">
+  <div class="nav-title" id="navTitle">🐾 嘔吐紀錄</div>
+  <button class="nav-btn" id="navBack" onclick="goBack()" style="display:none">✕</button>
+</div>
+
+<!-- ===== 首頁 ===== -->
+<div class="page active" id="pageHome">
+  <div class="content scroll-area">
+
+    <!-- 統計卡 -->
+    <div class="stats-card" id="statsCard">
+      <div class="stats-title">✨ 近期狀況 ✨</div>
+      <div class="stats-row">
+        <div class="stats-pet" id="statsDuoduo">
+          <div class="stats-pet-name">🐈 多多</div>
+          <div class="stats-item"><span class="stats-label">📅 今天</span><span class="stats-num" id="s-duo-today">0</span></div>
+          <div class="stats-item"><span class="stats-label">📆 本週</span><span class="stats-num" id="s-duo-week">0</span></div>
+          <div class="stats-item"><span class="stats-label">🗓️ 本月</span><span class="stats-num" id="s-duo-month">0</span></div>
+        </div>
+        <div class="stats-pet" id="statsNiuniu">
+          <div class="stats-pet-name">🐈 妞妞</div>
+          <div class="stats-item"><span class="stats-label">📅 今天</span><span class="stats-num" id="s-niu-today">0</span></div>
+          <div class="stats-item"><span class="stats-label">📆 本週</span><span class="stats-num" id="s-niu-week">0</span></div>
+          <div class="stats-item"><span class="stats-label">🗓️ 本月</span><span class="stats-num" id="s-niu-month">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 多多按鈕 -->
+    <div class="home-cat-section">
+      <button class="home-cat-btn" onclick="openAddRecord('多多')">
+        <div class="cat-btn-top">
+          <div class="cat-name-big">🐈 多多</div>
+          <div class="add-badge">＋ 新增紀錄</div>
+        </div>
+        <div class="today-records" id="today-duo">
+          <div class="no-records">🐾 今天暫無紀錄</div>
+        </div>
+      </button>
+
+      <!-- 妞妞按鈕 -->
+      <button class="home-cat-btn" onclick="openAddRecord('妞妞')">
+        <div class="cat-btn-top">
+          <div class="cat-name-big">🐈 妞妞</div>
+          <div class="add-badge">＋ 新增紀錄</div>
+        </div>
+        <div class="today-records" id="today-niu">
+          <div class="no-records">🐾 今天暫無紀錄</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- 底部功能按鈕 -->
+    <div class="bottom-nav">
+      <button class="bottom-nav-btn" onclick="goPage('pageAllRecords')">
+        <span>📅</span><span>全部紀錄</span>
+      </button>
+      <button class="bottom-nav-btn" onclick="goPage('pageSearch')">
+        <span>🔍</span><span>搜尋</span>
+      </button>
+      <button class="bottom-nav-btn" onclick="exportCSV()">
+        <span>📥</span><span>匯出 CSV</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== 新增／編輯紀錄頁 ===== -->
+<div class="page" id="pageAdd">
+  <div class="content scroll-area">
+    <div style="margin-bottom:14px">
+      <span class="pet-badge" id="addPetBadge">🐈 多多</span>
+    </div>
+
+    <!-- 時間 -->
+    <div class="form-section">
+      <div class="form-label">🕒 時間</div>
+      <input type="datetime-local" class="form-input" id="inputTime">
+    </div>
+
+    <!-- 嘔吐內容 -->
+    <div class="form-section">
+      <div class="form-label">🤮 嘔吐內容</div>
+      <div class="choice-grid" id="contentGrid">
+        <button class="choice-btn" data-val="黃色胃液" onclick="selectSingle(this,'contentGrid')"><span class="check-dot"></span>🟡 黃色胃液</button>
+        <button class="choice-btn" data-val="白色泡泡" onclick="selectSingle(this,'contentGrid')"><span class="check-dot"></span>⚪ 白色泡泡</button>
+        <button class="choice-btn" data-val="未消化飼料" onclick="selectSingle(this,'contentGrid')"><span class="check-dot"></span>🍖 未消化飼料</button>
+        <button class="choice-btn" data-val="消化中的食物" onclick="selectSingle(this,'contentGrid')"><span class="check-dot"></span>🥣 消化中的食物</button>
+        <button class="choice-btn" data-val="毛球" onclick="selectSingle(this,'contentGrid')"><span class="check-dot"></span>🧶 毛球</button>
+        <button class="choice-btn" data-val="水" onclick="selectSingle(this,'contentGrid')"><span class="check-dot"></span>💧 水</button>
+        <button class="choice-btn" data-val="其他" onclick="selectSingle(this,'contentGrid'); toggleOther('otherContentWrap',this)"><span class="check-dot"></span>✏️ 其他</button>
+      </div>
+      <div class="other-input-wrap" id="otherContentWrap" style="display:none">
+        <input type="text" class="form-input" id="otherContentInput" placeholder="請輸入嘔吐內容…">
+      </div>
+    </div>
+
+    <!-- 嘔吐次數 -->
+    <div class="form-section">
+      <div class="form-label">🤢 嘔吐次數</div>
+      <div class="count-control">
+        <button class="count-btn minus" onclick="changeCount(-1)">－</button>
+        <span class="count-num" id="countNum">1</span>
+        <span class="count-unit">次</span>
+        <button class="count-btn plus" onclick="changeCount(1)">＋</button>
+      </div>
+    </div>
+
+    <!-- 可能原因（複選） -->
+    <div class="form-section">
+      <div class="form-label">🍽️ 可能原因 <span style="font-weight:400;font-size: 15px;color:var(--text-light)">（可複選）</span></div>
+      <div class="choice-grid-3" id="reasonGrid">
+        <button class="choice-btn" data-val="吃太快" onclick="selectMulti(this)"><span class="check-dot"></span>🍽️ 吃太快</button>
+        <button class="choice-btn" data-val="剛吃完" onclick="selectMulti(this)"><span class="check-dot"></span>🥣 剛吃完</button>
+        <button class="choice-btn" data-val="毛球" onclick="selectMulti(this)"><span class="check-dot"></span>🧶 毛球</button>
+        <button class="choice-btn" data-val="空腹" onclick="selectMulti(this)"><span class="check-dot"></span>🤢 空腹</button>
+        <button class="choice-btn" data-val="吃藥後" onclick="selectMulti(this)"><span class="check-dot"></span>💊 吃藥後</button>
+        <button class="choice-btn" data-val="緊張" onclick="selectMulti(this)"><span class="check-dot"></span>😰 緊張</button>
+        <button class="choice-btn" data-val="吃草" onclick="selectMulti(this)"><span class="check-dot"></span>🌿 吃草</button>
+        <button class="choice-btn" data-val="喝太多水" onclick="selectMulti(this)"><span class="check-dot"></span>💧 喝太多水</button>
+        <button class="choice-btn" data-val="不明原因" onclick="selectMulti(this)"><span class="check-dot"></span>❓ 不明原因</button>
+        <button class="choice-btn" data-val="其他" onclick="selectMulti(this); toggleOther('otherReasonWrap',this)"><span class="check-dot"></span>✏️ 其他</button>
+      </div>
+      <div class="other-input-wrap" id="otherReasonWrap" style="display:none">
+        <input type="text" class="form-input" id="otherReasonInput" placeholder="請輸入原因…">
+      </div>
+    </div>
+
+    <!-- 備註 -->
+    <div class="form-section">
+      <div class="form-label">📝 備註</div>
+      <textarea class="form-textarea" id="inputNote" placeholder="例如：精神很好、食慾正常、吐完就去睡…"></textarea>
+    </div>
+
+    <!-- 儲存按鈕 -->
+    <button class="save-btn" onclick="saveRecord()">💾 儲存紀錄</button>
+  </div>
+</div>
+
+<!-- ===== 全部紀錄頁 ===== -->
+<div class="page" id="pageAllRecords">
+  <div class="content scroll-area">
+    <!-- 日期篩選 -->
+    <div class="date-jump">
+      <label>📅 選擇日期</label>
+      <input type="date" id="filterDate" oninput="renderAllRecords()">
+      <button class="filter-btn" onclick="clearDateFilter()" style="white-space:nowrap">清除</button>
+    </div>
+    <div id="allRecordsList"></div>
+  </div>
+</div>
+
+<!-- ===== 搜尋頁 ===== -->
+<div class="page" id="pageSearch">
+  <div class="content scroll-area">
+    <div class="search-bar">
+      <!-- 關鍵字 -->
+      <input type="text" class="search-input" id="searchKeyword" placeholder="🔍 輸入嘔吐內容或備註關鍵字…">
+      <!-- 貓咪篩選 -->
+      <div class="search-filters" id="searchPetFilters">
+        <button class="filter-btn active" data-pet="all" onclick="togglePetFilter(this)">全部</button>
+        <button class="filter-btn" data-pet="多多" onclick="togglePetFilter(this)">🐈 多多</button>
+        <button class="filter-btn" data-pet="妞妞" onclick="togglePetFilter(this)">🐈 妞妞</button>
+      </div>
+      <!-- 日期範圍 -->
+      <div style="display:flex;gap:8px;align-items:center;font-size: 16px;color:var(--text-light)">
+        <input type="date" class="search-input" id="searchDateFrom" style="flex:1;padding:8px 10px;font-size: 16px">
+        <span>～</span>
+        <input type="date" class="search-input" id="searchDateTo" style="flex:1;padding:8px 10px;font-size: 16px">
+      </div>
+      <button class="search-btn" onclick="doSearch()">🔍 搜尋</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ===== 確認刪除 Modal ===== -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box">
+    <div class="modal-title">🗑️ 確認刪除</div>
+    <div class="modal-msg">確定要刪除這筆紀錄嗎？<br>刪除後無法復原哦 🐾</div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModal()">取消</button>
+      <button class="modal-btn confirm" onclick="confirmDelete()">確認刪除</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Toast 通知 ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// 資料層：使用 localStorage 儲存所有紀錄
+// ============================================================
+
+const STORAGE_KEY = 'cat_vomit_records';
+
+/** 讀取所有紀錄 */
+function loadRecords() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+/** 儲存所有紀錄 */
+function saveRecords(records) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+// ============================================================
+// 狀態變數
+// ============================================================
+
+let currentPage = 'pageHome';   // 目前顯示的頁面
+let editingId = null;           // 編輯中的紀錄 id（null 表示新增）
+let currentPet = '多多';        // 目前操作的貓咪
+let vomitCount = 1;             // 嘔吐次數
+let pendingDeleteId = null;     // 等待確認刪除的 id
+let searchPetFilter = 'all';    // 搜尋：貓咪篩選
+
+// ============================================================
+// 頁面切換
+// ============================================================
+
+function goPage(pageId) {
+  document.querySelector('.page.active').classList.remove('active');
+  document.getElementById(pageId).classList.add('active');
+  currentPage = pageId;
+
+  // 導覽列設定
+  const titles = {
+    pageHome: '🐾 嘔吐紀錄',
+    pageAdd: editingId ? '✏️ 編輯紀錄' : '➕ 新增紀錄',
+    pageAllRecords: '📅 全部紀錄',
+    pageSearch: '🔍 搜尋紀錄',
+  };
+  document.getElementById('navTitle').textContent = titles[pageId] || '🐾 嘔吐紀錄';
+  document.getElementById('navBack').style.display = pageId === 'pageHome' ? 'none' : 'block';
+
+  // 各頁面初始化
+  if (pageId === 'pageHome') refreshHome();
+  if (pageId === 'pageAllRecords') renderAllRecords();
+  if (pageId === 'pageSearch') { document.getElementById('searchResults').innerHTML = ''; }
+}
+
+function goBack() { goPage('pageHome'); }
+
+// ============================================================
+// 首頁
+// ============================================================
+
+function refreshHome() {
+  updateStats();
+  renderTodayRecords();
+}
+
+/** 計算統計數字 */
+function updateStats() {
+  const records = loadRecords();
+  const now = new Date();
+  const todayStr = toDateStr(now);
+  const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+  const monthStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+  ['多多','妞妞'].forEach(pet => {
+    const petRecs = records.filter(r => r.pet === pet);
+    const today = petRecs.filter(r => r.date === todayStr).reduce((s,r) => s + (r.count||1), 0);
+    const week = petRecs.filter(r => new Date(r.date) >= weekStart).reduce((s,r) => s + (r.count||1), 0);
+    const month = petRecs.filter(r => r.date.startsWith(monthStr)).reduce((s,r) => s + (r.count||1), 0);
+
+    const prefix = pet === '多多' ? 's-duo' : 's-niu';
+    document.getElementById(`${prefix}-today`).textContent = today;
+    document.getElementById(`${prefix}-week`).textContent = week;
+    document.getElementById(`${prefix}-month`).textContent = month;
+  });
+}
+
+/** 顯示今天的紀錄在首頁貓咪按鈕內 */
+function renderTodayRecords() {
+  const records = loadRecords();
+  const todayStr = toDateStr(new Date());
+
+  ['多多','妞妞'].forEach(pet => {
+    const containerId = pet === '多多' ? 'today-duo' : 'today-niu';
+    const el = document.getElementById(containerId);
+    const todayRecs = records.filter(r => r.pet === pet && r.date === todayStr)
+                             .sort((a,b) => a.time.localeCompare(b.time));
+    if (!todayRecs.length) {
+      el.innerHTML = '<div class="no-records">🐾 今天暫無紀錄</div>';
+    } else {
+      el.innerHTML = todayRecs.map(r => `
+        <div class="record-row" onclick="event.stopPropagation()">
+          <span class="record-time">${r.time}</span>
+          <span class="record-content">${contentLabel(r.content)} ${r.count > 1 ? `×${r.count}` : ''}</span>
+          <div class="record-actions">
+            <button class="record-edit-btn" onclick="event.stopPropagation();openEditRecord('${r.id}')">✏️</button>
+            <button class="record-del-btn" onclick="event.stopPropagation();askDelete('${r.id}')">🗑️</button>
+          </div>
+        </div>`).join('');
+    }
+  });
+}
+
+// ============================================================
+// 新增 / 編輯紀錄
+// ============================================================
+
+function openAddRecord(pet) {
+  currentPet = pet;
+  editingId = null;
+  resetForm();
+  document.getElementById('addPetBadge').textContent = `🐈 ${pet}`;
+  // 預設時間為現在
+  document.getElementById('inputTime').value = toLocalDatetimeStr(new Date());
+  goPage('pageAdd');
+}
+
+function openEditRecord(id) {
+  const records = loadRecords();
+  const rec = records.find(r => r.id === id);
+  if (!rec) return;
+  editingId = id;
+  currentPet = rec.pet;
+  resetForm();
+  document.getElementById('addPetBadge').textContent = `🐈 ${rec.pet}`;
+  // 填入資料
+  document.getElementById('inputTime').value = `${rec.date}T${rec.time}`;
+  // 嘔吐內容
+  setSelectedSingle('contentGrid', rec.content === '其他' ? '其他' : rec.content);
+  if (rec.content === '其他') {
+    document.getElementById('otherContentWrap').style.display = 'block';
+    document.getElementById('otherContentInput').value = rec.otherContent || '';
+  }
+  // 次數
+  vomitCount = rec.count || 1;
+  document.getElementById('countNum').textContent = vomitCount;
+  // 原因（多選）
+  const reasons = rec.reasons || [];
+  document.querySelectorAll('#reasonGrid .choice-btn').forEach(btn => {
+    if (reasons.includes(btn.dataset.val)) {
+      btn.classList.add('selected-peach');
+    }
+  });
+  if (reasons.includes('其他')) {
+    document.getElementById('otherReasonWrap').style.display = 'block';
+    document.getElementById('otherReasonInput').value = rec.otherReason || '';
+  }
+  // 備註
+  document.getElementById('inputNote').value = rec.note || '';
+  goPage('pageAdd');
+  document.getElementById('navTitle').textContent = '✏️ 編輯紀錄';
+}
+
+/** 重置表單 */
+function resetForm() {
+  document.querySelectorAll('#contentGrid .choice-btn').forEach(b => b.classList.remove('selected','selected-peach'));
+  document.querySelectorAll('#reasonGrid .choice-btn').forEach(b => b.classList.remove('selected','selected-peach'));
+  document.getElementById('otherContentWrap').style.display = 'none';
+  document.getElementById('otherReasonWrap').style.display = 'none';
+  document.getElementById('otherContentInput').value = '';
+  document.getElementById('otherReasonInput').value = '';
+  document.getElementById('inputNote').value = '';
+  vomitCount = 1;
+  document.getElementById('countNum').textContent = 1;
+}
+
+/** 儲存紀錄 */
+function saveRecord() {
+  const timeVal = document.getElementById('inputTime').value;
+  if (!timeVal) { showToast('⚠️ 請選擇時間'); return; }
+
+  const dateObj = new Date(timeVal);
+  const date = toDateStr(dateObj);
+  const time = `${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
+
+  // 嘔吐內容
+  const contentBtn = document.querySelector('#contentGrid .choice-btn.selected');
+  let content = contentBtn ? contentBtn.dataset.val : '';
+  let otherContent = '';
+  if (content === '其他') {
+    otherContent = document.getElementById('otherContentInput').value.trim();
+    if (!otherContent) { showToast('⚠️ 請輸入嘔吐內容'); return; }
+  }
+  if (!content) { showToast('⚠️ 請選擇嘔吐內容'); return; }
+
+  // 原因（多選）
+  const reasonBtns = document.querySelectorAll('#reasonGrid .choice-btn.selected-peach');
+  const reasons = Array.from(reasonBtns).map(b => b.dataset.val);
+  let otherReason = '';
+  if (reasons.includes('其他')) {
+    otherReason = document.getElementById('otherReasonInput').value.trim();
+  }
+
+  const note = document.getElementById('inputNote').value.trim();
+
+  const records = loadRecords();
+  if (editingId) {
+    // 更新現有紀錄
+    const idx = records.findIndex(r => r.id === editingId);
+    if (idx > -1) {
+      records[idx] = { ...records[idx], date, time, content, otherContent, count: vomitCount, reasons, otherReason, note };
+    }
+    showToast('✅ 紀錄已更新！');
+  } else {
+    // 新增紀錄
+    records.push({ id: genId(), pet: currentPet, date, time, content, otherContent, count: vomitCount, reasons, otherReason, note });
+    showToast('🐾 紀錄已儲存！');
+  }
+  saveRecords(records);
+  goPage('pageHome');
+}
+
+// ============================================================
+// 選擇按鈕邏輯
+// ============================================================
+
+/** 單選（嘔吐內容） */
+function selectSingle(btn, gridId) {
+  document.querySelectorAll(`#${gridId} .choice-btn`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+/** 多選（原因） */
+function selectMulti(btn) {
+  btn.classList.toggle('selected-peach');
+}
+
+/** 顯示／隱藏「其他」輸入框 */
+function toggleOther(wrapId, btn) {
+  const wrap = document.getElementById(wrapId);
+  const isSelected = btn.classList.contains('selected') || btn.classList.contains('selected-peach');
+  wrap.style.display = isSelected ? 'block' : 'none';
+}
+
+/** 根據值設定單選 */
+function setSelectedSingle(gridId, val) {
+  document.querySelectorAll(`#${gridId} .choice-btn`).forEach(b => {
+    if (b.dataset.val === val) b.classList.add('selected');
+  });
+}
+
+// ============================================================
+// 次數控制
+// ============================================================
+
+function changeCount(delta) {
+  vomitCount = Math.max(1, vomitCount + delta);
+  document.getElementById('countNum').textContent = vomitCount;
+}
+
+// ============================================================
+// 全部紀錄頁
+// ============================================================
+
+function renderAllRecords() {
+  const records = loadRecords();
+  const filterDate = document.getElementById('filterDate').value;
+  const container = document.getElementById('allRecordsList');
+
+  // 依日期篩選
+  let filtered = filterDate ? records.filter(r => r.date === filterDate) : records;
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-emoji">📭</div>沒有找到紀錄<br>快去幫毛小孩記錄吧 🐾</div>`;
+    return;
+  }
+
+  // 依日期分組（新→舊）
+  const groups = {};
+  filtered.forEach(r => { if (!groups[r.date]) groups[r.date] = []; groups[r.date].push(r); });
+  const sortedDates = Object.keys(groups).sort((a,b) => b.localeCompare(a));
+
+  container.innerHTML = sortedDates.map(date => `
+    <div class="date-group">
+      <div class="date-header">📅 ${formatDateDisplay(date)}</div>
+      ${groups[date].sort((a,b) => b.time.localeCompare(a.time)).map(r => recordCard(r)).join('')}
+    </div>
+  `).join('');
+}
+
+function clearDateFilter() {
+  document.getElementById('filterDate').value = '';
+  renderAllRecords();
+}
+
+// ============================================================
+// 搜尋頁
+// ============================================================
+
+function togglePetFilter(btn) {
+  document.querySelectorAll('#searchPetFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  searchPetFilter = btn.dataset.pet;
+}
+
+function doSearch() {
+  const keyword = document.getElementById('searchKeyword').value.trim().toLowerCase();
+  const dateFrom = document.getElementById('searchDateFrom').value;
+  const dateTo = document.getElementById('searchDateTo').value;
+  const records = loadRecords();
+
+  const results = records.filter(r => {
+    if (searchPetFilter !== 'all' && r.pet !== searchPetFilter) return false;
+    if (dateFrom && r.date < dateFrom) return false;
+    if (dateTo && r.date > dateTo) return false;
+    if (keyword) {
+      const haystack = [
+        r.content, r.otherContent, r.note,
+        ...(r.reasons || []), r.otherReason
+      ].join(' ').toLowerCase();
+      if (!haystack.includes(keyword)) return false;
+    }
+    return true;
+  }).sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
+
+  const container = document.getElementById('searchResults');
+  if (!results.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-emoji">🔍</div>沒有符合的紀錄</div>`;
+    return;
+  }
+  container.innerHTML = results.map(r => recordCard(r)).join('');
+}
+
+// ============================================================
+// 紀錄卡片（HTML）
+// ============================================================
+
+function recordCard(r) {
+  const contentText = r.content === '其他' ? (r.otherContent || '其他') : contentLabel(r.content);
+  const reasons = (r.reasons || []).map(rs => {
+    const txt = rs === '其他' ? (r.otherReason || '其他') : rs;
+    return `<span class="tag">${txt}</span>`;
+  }).join('');
+  const noteHtml = r.note ? `<div style="font-size: 16px;color:var(--text-light);margin-top:4px">📝 ${r.note}</div>` : '';
+  return `
+    <div class="full-record-card">
+      <div class="full-record-top">
+        <span class="full-record-pet">🐈 ${r.pet}</span>
+        <span class="full-record-time">${r.date} ${r.time}</span>
+      </div>
+      <div class="full-record-content">
+        <div>${contentText}${r.count > 1 ? `　×${r.count} 次` : ''}</div>
+        ${reasons ? `<div style="margin-top:6px">${reasons}</div>` : ''}
+        ${noteHtml}
+      </div>
+      <div class="full-record-actions">
+        <button class="action-btn" onclick="openEditRecord('${r.id}')">✏️ 編輯</button>
+        <button class="action-btn del" onclick="askDelete('${r.id}')">🗑️ 刪除</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// 刪除紀錄
+// ============================================================
+
+function askDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('deleteModal').classList.remove('show');
+  pendingDeleteId = null;
+}
+
+function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const records = loadRecords().filter(r => r.id !== pendingDeleteId);
+  saveRecords(records);
+  closeModal();
+  showToast('🗑️ 紀錄已刪除');
+  // 依目前頁面重新渲染
+  if (currentPage === 'pageHome') refreshHome();
+  else if (currentPage === 'pageAllRecords') renderAllRecords();
+  else if (currentPage === 'pageSearch') doSearch();
+}
+
+// ============================================================
+// 匯出 CSV
+// ============================================================
+
+function exportCSV() {
+  const records = loadRecords().sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+  if (!records.length) { showToast('⚠️ 目前沒有紀錄'); return; }
+
+  const header = ['日期','時間','貓咪','嘔吐內容','次數','可能原因','備註'];
+  const rows = records.map(r => [
+    r.date, r.time, r.pet,
+    r.content === '其他' ? (r.otherContent || '其他') : r.content,
+    r.count || 1,
+    (r.reasons || []).map(rs => rs === '其他' ? (r.otherReason || '其他') : rs).join('、'),
+    r.note || ''
+  ]);
+
+  // 加上 BOM 讓 Excel 正確顯示中文
+  const csv = '\uFEFF' + [header, ...rows].map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `嘔吐紀錄_${toDateStr(new Date())}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 CSV 匯出成功！');
+}
+
+// ============================================================
+// 工具函式
+// ============================================================
+
+/** 產生唯一 id */
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/** 日期物件 → YYYY-MM-DD */
+function toDateStr(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+/** 日期物件 → datetime-local 格式 */
+function toLocalDatetimeStr(d) {
+  return `${toDateStr(d)}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+/** YYYY-MM-DD → 顯示用文字 */
+function formatDateDisplay(str) {
+  const d = new Date(str + 'T00:00:00');
+  const week = ['日','一','二','三','四','五','六'][d.getDay()];
+  return `${str}（週${week}）`;
+}
+
+/** 嘔吐內容的 emoji label */
+function contentLabel(val) {
+  const map = {
+    '黃色胃液':'🟡 黃色胃液','白色泡泡':'⚪ 白色泡泡',
+    '未消化飼料':'🍖 未消化飼料','消化中的食物':'🥣 消化中的食物',
+    '毛球':'🧶 毛球','水':'💧 水','其他':'✏️ 其他'
+  };
+  return map[val] || val;
+}
+
+/** 顯示 Toast 通知 */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ============================================================
+// 點擊遮罩關閉 Modal
+// ============================================================
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ============================================================
+// 初始化
+// ============================================================
+refreshHome();
+</script>
+</body>
+</html>
